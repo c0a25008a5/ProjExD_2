@@ -27,6 +27,7 @@ def chech_bound(rct: pg.Rect)->tuple[bool,bool]:#練3外いかない
         tate=False
     return yoko,tate
 
+
 def gameover(screen: pg.Surface) -> None:
     go_img=pg.Surface((1100,650))#黒い図
     pg.draw.rect(go_img,(0,0,0),pg.Rect(0,0,1100,650))
