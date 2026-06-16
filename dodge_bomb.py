@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -26,6 +27,34 @@ def chech_bound(rct: pg.Rect)->tuple[bool,bool]:#練3外いかない
         tate=False
     return yoko,tate
 
+def gameover(screen: pg.Surface) -> None:
+    go_img=pg.Surface((1100,650))
+    pg.draw.rect(go_img,(0,0,0),pg.Rect(0,0,1100,650))
+    go_img.set_alpha(180)
+
+    fonto=pg.font.Font(None,100)
+    txt=fonto.render("Game Over",True,(255,255,255))
+    txt_rct = txt.get_rect()
+    txt_rct.center = 1100 // 2, 650 // 2
+    go_img.blit(txt,txt_rct)
+
+    kc_img_l = pg.image.load("fig/8.png")
+    kc_img_r = pg.transform.flip(kc_img_l, True, False)
+    kc_rct_l = kc_img_l.get_rect()
+    kc_rct_l.center = WIDTH // 2 - 200, HEIGHT // 2
+    kc_rct_r = kc_img_r.get_rect()
+    kc_rct_r.center = WIDTH // 2 + 200, HEIGHT // 2
+    
+    go_img.blit(kc_img_l, kc_rct_l)
+    go_img.blit(kc_img_r, kc_rct_r)
+    screen.blit(go_img,[0,0])
+
+    pg.display.update()
+    time.sleep(5)
+    
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -44,6 +73,8 @@ def main():
     vx,vy=+5,+5
 
 
+
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -51,7 +82,7 @@ def main():
             if event.type == pg.QUIT:  #ゲーム終了
                 return
         if kk_rct.colliderect(bb_rct):#練4鳥と爆弾衝突したら終わる
-            print("ゲームオーバー")
+            gameover(screen)
             return
         screen.blit(bg_img, [0, 0]) 
 
