@@ -13,6 +13,18 @@ DELTA={
     } #練1
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def chech_bound(rct: pg.Rect)->tuple[bool,bool]:
+    """
+    引数：こうかとんRect or 爆弾Rect
+    戻り値：判定結果タプル(横方向判定結果,縦方向判定結果)
+    画面内ならTrue,画面外ならFalse
+    """
+    yoko,tate=True,True #画面内
+    if rct.left < 0 or WIDTH < rct.right: #横
+        yoko= False #画面外
+    if rct.top < 0 or HEIGHT < rct.bottom: #縦
+        tate=False
+    return yoko,tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -22,7 +34,7 @@ def main():
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     
-    #練2
+    #練2　爆弾挿入
     bb_img = pg.Surface((20,20)) #円のサイズ
     pg.draw.circle(bb_img,(255,0,0),(10,10),10) #
     bb_img.set_colorkey((0,0,0)) # 黒い部分を透明にする
@@ -56,9 +68,17 @@ def main():
                 sum_mv[1] += mv[1] #縦方向の移動量
 
         kk_rct.move_ip(sum_mv)
+        if chech_bound(kk_rct) !=(True,True):
+            kk_rct.move_ip(-sum_mv[0],-sum_mv[1])#動きをなかったことに
         screen.blit(kk_img, kk_rct)
 
-        bb_rct.move_ip(vx,vy)
+        bb_rct.move_ip(vx,vy) #練2爆弾動く
+        yoko,tate=chech_bound(bb_rct)
+        if not yoko:
+            vx *= -1
+        if not tate:
+            vy *= -1
+
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
