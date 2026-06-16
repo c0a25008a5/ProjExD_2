@@ -13,7 +13,7 @@ DELTA={
     } #練1
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-def chech_bound(rct: pg.Rect)->tuple[bool,bool]:
+def chech_bound(rct: pg.Rect)->tuple[bool,bool]:#練3外いかない
     """
     引数：こうかとんRect or 爆弾Rect
     戻り値：判定結果タプル(横方向判定結果,縦方向判定結果)
@@ -48,8 +48,11 @@ def main():
     tmr = 0
     while True:
         for event in pg.event.get():
-            if event.type == pg.QUIT: 
+            if event.type == pg.QUIT:  #ゲーム終了
                 return
+        if kk_rct.colliderect(bb_rct):#練4鳥と爆弾衝突したら終わる
+            print("ゲームオーバー")
+            return
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
@@ -68,12 +71,12 @@ def main():
                 sum_mv[1] += mv[1] #縦方向の移動量
 
         kk_rct.move_ip(sum_mv)
-        if chech_bound(kk_rct) !=(True,True):
+        if chech_bound(kk_rct) !=(True,True):#練3外いかない2
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])#動きをなかったことに
         screen.blit(kk_img, kk_rct)
 
         bb_rct.move_ip(vx,vy) #練2爆弾動く
-        yoko,tate=chech_bound(bb_rct)
+        yoko,tate=chech_bound(bb_rct) #練3跳ね返る
         if not yoko:
             vx *= -1
         if not tate:
